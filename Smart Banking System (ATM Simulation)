@@ -1,0 +1,118 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class BankAccount {
+    private String accountHolder;
+    private int pin;
+    private double balance;
+    private ArrayList<String> transactionHistory;
+
+    public BankAccount(String name, int pin, double initialDeposit) {
+        this.accountHolder = name;
+        this.pin = pin;
+        this.balance = initialDeposit;
+        this.transactionHistory = new ArrayList<>();
+        addTransaction("Account created with ₹" + initialDeposit);
+    }
+
+    public boolean validatePin(int inputPin) {
+        return this.pin == inputPin;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            addTransaction("Deposited: ₹" + amount);
+            System.out.println("Success! New Balance: ₹" + balance);
+        } else {
+            System.out.println("Invalid amount.");
+        }
+    }
+
+    public void withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            addTransaction("Withdrew: ₹" + amount);
+            System.out.println("Success! Please collect cash. Remaining: ₹" + balance);
+        } else {
+            System.out.println("Transaction Failed: Insufficient balance or invalid amount.");
+        }
+    }
+
+    public void showHistory() {
+        System.out.println("\n--- Transaction History ---");
+        for (String record : transactionHistory) {
+            System.out.println(record);
+        }
+    }
+
+    private void addTransaction(String message) {
+        transactionHistory.add(message);
+    }
+}
+
+public class BankingApp {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Simulating a database with one user
+        System.out.println("=== Welcome to Java Bank ===");
+        System.out.println("Setup your new account:");
+        System.out.print("Enter Name: ");
+        String name = scanner.nextLine();
+        System.out.print("Set a 4-digit PIN: ");
+        int pin = scanner.nextInt();
+        System.out.print("Initial Deposit: ");
+        double deposit = scanner.nextDouble();
+
+        BankAccount userAccount = new BankAccount(name, pin, deposit);
+        
+        System.out.println("\nAccount Setup Complete! Please Login.");
+        
+        // Login System
+        System.out.print("Enter PIN to access: ");
+        int enteredPin = scanner.nextInt();
+
+        if (userAccount.validatePin(enteredPin)) {
+            boolean exit = false;
+            while (!exit) {
+                System.out.println("\n1. Check Balance");
+                System.out.println("2. Deposit Money");
+                System.out.println("3. Withdraw Money");
+                System.out.println("4. Mini Statement");
+                System.out.println("5. Exit");
+                System.out.print("Choose option: ");
+                int choice = scanner.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        System.out.println("Current Balance: ₹" + userAccount.getBalance());
+                        break;
+                    case 2:
+                        System.out.print("Enter Amount to Deposit: ");
+                        userAccount.deposit(scanner.nextDouble());
+                        break;
+                    case 3:
+                        System.out.print("Enter Amount to Withdraw: ");
+                        userAccount.withdraw(scanner.nextDouble());
+                        break;
+                    case 4:
+                        userAccount.showHistory();
+                        break;
+                    case 5:
+                        exit = true;
+                        System.out.println("Thank you for banking with us!");
+                        break;
+                    default:
+                        System.out.println("Invalid option.");
+                }
+            }
+        } else {
+            System.out.println("Wrong PIN! Access Denied.");
+        }
+    }
+}
