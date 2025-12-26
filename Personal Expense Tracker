@@ -1,0 +1,94 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Date;
+
+// Class to represent a single expense
+class Expense {
+    String description;
+    double amount;
+    String category;
+    Date date;
+
+    public Expense(String description, double amount, String category) {
+        this.description = description;
+        this.amount = amount;
+        this.category = category;
+        this.date = new Date(); // Captures current date
+    }
+
+    @Override
+    public String toString() {
+        return "Amount: ₹" + amount + " | For: " + description + " | Category: " + category + " | Date: " + date;
+    }
+}
+
+public class ExpenseTracker {
+    private static ArrayList<Expense> expenses = new ArrayList<>();
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        System.out.println("=== Personal Expense Tracker Application ===");
+        
+        while (true) {
+            System.out.println("\n1. Add Expense");
+            System.out.println("2. View All Expenses");
+            System.out.println("3. View Total Spending");
+            System.out.println("4. Exit");
+            System.out.print("Choose an option: ");
+            
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    addExpense();
+                    break;
+                case 2:
+                    viewExpenses();
+                    break;
+                case 3:
+                    calculateTotal();
+                    break;
+                case 4:
+                    System.out.println("Exiting... Keep saving!");
+                    return;
+                default:
+                    System.out.println("Invalid option. Try again.");
+            }
+        }
+    }
+
+    private static void addExpense() {
+        System.out.print("Enter Description (e.g., Lunch, Bus Ticket): ");
+        String desc = scanner.nextLine();
+        
+        System.out.print("Enter Amount: ");
+        double amount = scanner.nextDouble();
+        scanner.nextLine(); // Consume newline
+        
+        System.out.print("Enter Category (Food/Travel/Bills): ");
+        String category = scanner.nextLine();
+        
+        expenses.add(new Expense(desc, amount, category));
+        System.out.println("Expense added successfully!");
+    }
+
+    private static void viewExpenses() {
+        if (expenses.isEmpty()) {
+            System.out.println("No expenses recorded yet.");
+            return;
+        }
+        System.out.println("\n--- Your Expenses ---");
+        for (Expense e : expenses) {
+            System.out.println(e);
+        }
+    }
+
+    private static void calculateTotal() {
+        double total = 0;
+        for (Expense e : expenses) {
+            total += e.amount;
+        }
+        System.out.println("\nTotal Spending: ₹" + total);
+    }
+}
